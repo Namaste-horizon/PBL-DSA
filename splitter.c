@@ -235,6 +235,7 @@ static void suggestion(splitter *s) {
         free(pos); free(neg); free(posidx); free(negidx);
         return;
     }
+    
     printf("\nsuggested settlements\n");
     int ip = 0, in = 0;
     while (ip < poscount && in < negcount) {
