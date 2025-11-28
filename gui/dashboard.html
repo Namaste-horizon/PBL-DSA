@@ -27,7 +27,8 @@
         <section class="content" id="addview">
             <h2>Add Record</h2>
             <input id="recdate" class="input" placeholder="YYYY-MM-DD">
-            <input id="reccat" class="input" placeholder="Category (e.g. Food)">
+            <input id="reccat" list="catlist" class="input" placeholder="Category (e.g. Food)">
+            <datalist id="catlist"></datalist>
             <input id="recdet" class="input" placeholder="Description (e.g. pizza)">
             <input id="recamt" class="input" placeholder="Amount">
             <button id="addrec" class="btn">Add</button>
