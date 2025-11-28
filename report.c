@@ -50,6 +50,47 @@ void printtop(finance *f) {
                f->list[i].date, f->list[i].category, f->list[i].text, f->list[i].amount);
     }
 }
+int makereportforuser(const char *owner, transaction *all, int total)
+{
+    if (!owner || !all || total <= 0) return 0;
+    int count = 0;
+    for (int i = 0; i < total; ++i)
+        if (all[i].owner && strcmp(all[i].owner, owner) == 0) count++;
+    char fn[256];
+    if (count == 0) {
+        snprintf(fn, sizeof(fn), "report_%s.csv", owner);
+        FILE *f = fopen(fn, "w");
+        if (f) {
+            fprintf(f, "txid,date,category,description,amount\n");
+            fprintf(f, "# no transactions for user %s\n", owner);
+            fclose(f);
+        }
+        return 0;
+    }
+    transaction *list = malloc(sizeof(transaction) * count);
+    if (!list) return 0;
+    int idx = 0;
+    for (int i = 0; i < total; ++i)
+        if (all[i].owner && strcmp(all[i].owner, owner) == 0)
+            list[idx++] = all[i];
+    snprintf(fn, sizeof(fn), "report_%s.csv", owner);
+    FILE *f = fopen(fn, "w");
+    if (!f) {
+        free(list);
+        return 0;
+    }
+    fprintf(f, "txid,date,category,description,amount\n");
+    for (int i = 0; i < count; ++i)
+        fprintf(f, "%s,%s,%s,%s,%.2f\n",
+            list[i].id ? list[i].id : "",
+            list[i].date ? list[i].date : "",
+            list[i].cat ? list[i].cat : "",
+            list[i].det ? list[i].det : "",
+            list[i].amt);
+    fclose(f);
+    free(list);
+    return 1;
+}
 
 void printmonth(finance *f) {
     printf("\nmonthly summary\n");
