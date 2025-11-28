@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <math.h>
 #include "fraud.h"
-
+#include"report.h"
 typedef struct daystat {
     char date[11];
     double sum;
@@ -163,6 +163,68 @@ static int last_gap(finance *f, int idx) {
         }
     }
     return best;
+}
+int detectfraudforuser(const char *owner, transaction *all, int total)
+{
+    if (!owner || !all || total <= 0) return 0;
+    int count = 0;
+    for (int i = 0; i < total; ++i)
+        if (all[i].owner && strcmp(all[i].owner, owner) == 0) count++;
+    char fn[256];
+    if (count == 0) {
+        snprintf(fn, sizeof(fn), "fraud_%s.txt", owner);
+        FILE *f = fopen(fn, "w");
+        if (f) {
+            fprintf(f, "no data for user %s\n", owner);
+            fclose(f);
+        }
+        return 0;
+    }
+    transaction *list = malloc(sizeof(transaction) * count);
+    if (!list) return 0;
+    int idx = 0;
+    for (int i = 0; i < total; ++i)
+        if (all[i].owner && strcmp(all[i].owner, owner) == 0)
+            list[idx++] = all[i];
+    char outbuf[65536];
+    outbuf[0] = '\0';
+    int found = 0;
+    for (int i = 0; i < count; ++i) {
+        double sum = 0;
+        int ccount = 0;
+        char month[8] = {0};
+        if (strlen(list[i].date) >= 7) {
+            strncpy(month, list[i].date, 7);
+            month[7] = '\0';
+        }
+        for (int j = 0; j < count; ++j) {
+            char m2[8] = {0};
+            if (strlen(list[j].date) >= 7) {
+                strncpy(m2, list[j].date, 7);
+                m2[7] = '\0';
+            }
+            if (strcmp(list[j].cat, list[i].cat) == 0 && strcmp(m2, month) == 0) {
+                sum += list[j].amt;
+                ccount++;
+            }
+        }
+        double avg = (ccount > 0) ? sum / ccount : 0;
+        if (avg > 0 && list[i].amt >= 3.0 * avg) {
+            found++;
+            char line[512];
+            snprintf(line, sizeof(line), "[high spend warning] %s %s %.2f\n", list[i].cat, list[i].date, list[i].amt);
+            strncat(outbuf, line, sizeof(outbuf) - strlen(outbuf) - 1);
+        }
+    }
+    if (!found) strncat(outbuf, "no fraud patterns\n", sizeof(outbuf) - strlen(outbuf) - 1);
+    snprintf(fn, sizeof(fn), "fraud_%s.txt", owner);
+    FILE *f = fopen(fn, "w");
+    if (f) {
+        fwrite(outbuf, 1, strlen(outbuf), f);
+        fclose(f);
+    }
+    free(list);
+    return 1;
 }
 
 void detect_fraud(finance *f) {

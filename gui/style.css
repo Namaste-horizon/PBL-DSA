@@ -1,0 +1,201 @@
+:root {
+    --gold: #d4af37;
+    --text: #f8f8f8;
+    --card: rgba(20, 20, 20, .75)
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif
+}
+
+html,
+body {
+    height: 100%;
+    background: #000;
+    overflow: hidden
+}
+
+body {
+    background: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("coins.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.45) blur(2px);
+    z-index: -1;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid rgba(212, 175, 55, .25);
+    box-shadow: 0 0 25px rgba(212, 175, 55, .4);
+    border-radius: 16px;
+    padding: 40px;
+    width: 340px;
+    text-align: center;
+    color: var(--text);
+}
+
+h1 {
+    color: var(--gold);
+    margin-bottom: 15px
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, .3);
+    background: rgba(255, 255, 255, .1);
+    color: #fff
+}
+
+/* make select dropdown text always visible */
+select.input {
+    color: var(--text);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    appearance: none;
+}
+
+select.input option {
+    background-color: #1a1a1a;
+    color: var(--text);
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    background: var(--gold);
+    color: #000;
+    cursor: pointer;
+    transition: .3s
+}
+
+.btn:hover {
+    box-shadow: 0 0 10px var(--gold)
+}
+
+a {
+    color: var(--gold);
+    text-decoration: none
+}
+
+a:hover {
+    text-decoration: underline
+}
+
+.links {
+    margin-top: 10px
+}
+
+.hidden {
+    display: none
+}
+
+.small {
+    font-size: 13px;
+    color: #ccc;
+    margin-top: 4px
+}
+
+/* dashboard */
+.topbar {
+    background: rgba(0, 0, 0, .8);
+    padding: 10px 20px;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.main {
+    display: flex;
+    flex: 1;
+    background: rgba(10, 10, 10, .8);
+    height: calc(100vh - 50px)
+}
+
+.sidebar {
+    width: 200px;
+    background: rgba(255, 255, 255, .05);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px
+}
+
+.nav {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    text-align: left;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer
+}
+
+.nav.active {
+    background: var(--gold);
+    color: #000
+}
+
+.content {
+    flex: 1;
+    padding: 25px;
+    color: var(--text);
+    overflow: auto
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px
+}
+
+.table th,
+.table td {
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    padding: 8px
+}
+
+.table th {
+    color: var(--gold);
+    cursor: pointer
+}
+
+.fraudout {
+    background: rgba(0, 0, 0, .6);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 10px;
+    color: #0f0;
+    margin-top: 10px;
+    white-space: pre-wrap
+}

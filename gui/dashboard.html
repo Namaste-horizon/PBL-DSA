@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Finance Dashboard</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg"></div>
+    <header class="topbar">
+        <h1>Finance Manager</h1>
+        <div>
+            <span id="currentuser"></span>
+            <button id="logout" class="btn">Logout</button>
+        </div>
+    </header>
+
+    <div class="main">
+        <aside class="sidebar">
+            <button class="nav active" data-view="addview">Add Record</button>
+            <button class="nav" data-view="reportview">Reports</button>
+            <button class="nav" data-view="fraudview">Fraud Check</button>
+            <button class="nav" data-view="splitview">Split Expense</button>
+        </aside>
+
+        <section class="content" id="addview">
+            <h2>Add Record</h2>
+            <input id="recdate" class="input" placeholder="YYYY-MM-DD">
+            <input id="reccat" class="input" placeholder="Category (e.g. Food)">
+            <input id="recdet" class="input" placeholder="Description (e.g. pizza)">
+            <input id="recamt" class="input" placeholder="Amount">
+            <button id="addrec" class="btn">Add</button>
+            <p id="lasttx" class="small"></p>
+        </section>
+
+        <section class="content hidden" id="reportview">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+                <h2>Reports</h2>
+                <div>
+                    <label for="sortselect" style="color:var(--gold);font-weight:500;margin-right:8px;">Sort by:</label>
+                    <select id="sortselect" class="input" style="width:auto;display:inline-block;">
+                        <option value="date">Date</option>
+                        <option value="amt">Amount</option>
+                        <option value="cat">Category</option>
+                        <option value="det">Description</option>
+                    </select>
+                    <button id="sortbtn" class="btn">Apply</button>
+                    <button id="exportreportbtn" class="btn">Export Report</button>
+                </div>
+            </div>
+            <div class="tablebox">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>TXID</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="content hidden" id="fraudview">
+            <h2>Fraud Check</h2>
+            <div style="display:flex;gap:10px;align-items:center">
+                <button id="runfraud" class="btn">Run Check</button>
+                <button id="downloadfraud" class="btn">Download Last</button>
+            </div>
+            <pre id="fraudout" class="fraudout">No results</pre>
+        </section>
+
+        <section class="content hidden" id="splitview">
+            <h2>Split Expense</h2>
+            <input id="sdate" class="input" placeholder="YYYY-MM-DD">
+            <input id="scat" class="input" placeholder="Category (e.g. Food)">
+            <input id="sdet" class="input" placeholder="Description (e.g. dinner)">
+            <input id="samt" class="input" placeholder="Total Amount">
+            <input id="sparticipants" class="input" placeholder="Participants (comma separated usernames)">
+            <select id="ssplitmode" class="input">
+                <option value="equal">Equal</option>
+                <option value="custom">Custom amounts (comma separated)</option>
+            </select>
+            <input id="scustom" class="input hidden" placeholder="Custom amounts (comma separated)">
+            <button id="splitbtn" class="btn">Split and Add</button>
+            <p id="splittx" class="small"></p>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        (function(){
+            const dlButton = document.getElementById('downloadfraud');
+            if(dlButton){
+                dlButton.onclick = () => {
+                    const current = localStorage.getItem("current");
+                    if(!current) return location.href = "index.html";
+                    const name = `fraud_${current}.txt`;
+                    fetch(name).then(r=>{
+                        if(r.ok) return r.text();
+                        return Promise.resolve(localStorage.getItem('lastFraud') || 'No local result');
+                    }).then(txt=>{
+                        const a = document.createElement('a');
+                        const blob = new Blob([txt], {type:'text/plain'});
+                        a.href = URL.createObjectURL(blob);
+                        a.download = name;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+                    }).catch(()=>alert('no file available for download'));
+                };
+            }
+        })();
+    </script>
+</body>
+</html>
