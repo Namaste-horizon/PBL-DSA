@@ -3,6 +3,7 @@
 #include <string.h>
 #include "report.h"
 #include "transaction.h"
+#include "fraud.h"
 
 void initfinance(finance *f, int s) {
     f->list = NULL;
@@ -183,7 +184,8 @@ void menufinance(finance *f) {
         printf("1 add record\n");
         printf("2 view reports\n");
         printf("3 show categories\n");
-        printf("4 save and exit\n");
+        printf("4 detect fraud\n");
+        printf("5 save and exit\n");
         printf("enter choice: ");
         if (scanf("%d", &choice) != 1) {
             int c; while ((c = getchar()) != '\n' && c != EOF) {}
@@ -196,6 +198,8 @@ void menufinance(finance *f) {
         } else if (choice == 3) {
             showcats(f);
         } else if (choice == 4) {
+            detect_fraud(f);
+        } else if (choice == 5) {
             savefile(f, "transactions.csv");
             savecats(f, "categories.txt");
             printf("bye\n");
