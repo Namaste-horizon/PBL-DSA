@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SPLITTER_H
+#define SPLITTER_H
 
 typedef struct splitmember {
     char name[50];
@@ -41,4 +42,6 @@ typedef struct splitter {
 void initsplitter(splitter *s);
 void freesplitter(splitter *s);
 void splittermenu(splitter *s);
+
+#endif
 
