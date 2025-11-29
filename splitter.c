@@ -16,7 +16,7 @@ static int ensure_member_cap(splitter *s) {
     if (!nm) return 0;
     s->members = nm;
     s->membercap = newcap;
-    return 1;
+    return 1
 }
 
 static int ensure_expense_cap(splitter *s) {
